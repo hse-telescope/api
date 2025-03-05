@@ -1,0 +1,27 @@
+openapi: '3.0.3'
+info:
+  title: TeleScope
+  version: '0.1.0'
+
+paths:
+  /gateway/v1/ping:
+    get:
+      responses:
+        '200':
+          description: OK
+        '504':
+          description: Failed to ping service
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
