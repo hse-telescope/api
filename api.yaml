@@ -1,0 +1,462 @@
+openapi: 3.0.0
+info:
+  title: api  
+  version: 1.0.0
+  description: api crud services, relations, projects
+servers:
+  - url: 'https://109.71.245.46/api/v1'
+    description: dev server
+tags:
+  - name: projects
+  - name: graph
+  - name: services
+  - name: relations
+paths:
+  /graph/{graphId}:
+    get:
+      tags: 
+      - graph
+      summary: Get diagram by id
+      parameters:
+        - name: graphId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful request, return diagram
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: diagram id
+                  name:
+                    type: string
+                    description: diagram 
+                    
+    delete:
+      tags: 
+        - graph
+      summary: Delete diagram by id
+      parameters:
+        - name: graphId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Successful delete
+  /graph:
+    post:
+      tags:
+        - graph
+      summary: Create new diagram
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                description:
+                  type: string
+                graph_id:
+                  type: integer
+                x:
+                  type: integer
+                y:
+                  type: integer
+      responses:
+        '201':
+          description: Succesful create
+          
+  /graph/services/{graphId}:
+    get:
+      tags: 
+      - graph
+      summary: Get services of diagram by id
+      parameters:
+        - name: graphId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful request, return diagram
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    description:
+                      type: string
+                    graph_id:
+                      type: integer
+                    x:
+                      type: integer
+                    y:
+                      type: integer
+  /graph/relations/{graphId}:
+    get:
+      tags: 
+      - graph
+      summary: Get relations of diagram by id
+      parameters:
+        - name: graphId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful request, return diagram
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    description:
+                      type: string
+                    graph_id:
+                      type: integer
+                    from_service:
+                      type: string
+                    to_service:
+                      type: string
+  /services:
+    post:
+      summary: Create new service
+      tags:
+      - services
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                description:
+                  type: string
+                graph_id:
+                  type: integer
+                x:
+                  type: integer
+                y:
+                  type: integer
+      responses:
+        '201':
+          description: Create new service
+  /relations:
+    post:
+      summary: Create new relation
+      tags:
+      - relations
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                description:
+                  type: string
+                graph_id:
+                  type: integer
+                from_service:
+                  type: string
+                to_service:
+                  type: string
+      responses:
+        '201':
+          description: Create new relation
+  /services/{serviceId}:
+    get:
+      summary: Get services by ID
+      tags:
+        - services
+      parameters:
+        - name: serviceId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: return service
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  description:
+                    type: string
+                  graph_id:
+                    type: integer
+                  x:
+                    type: integer
+                  y:
+                    type: integer
+    put:
+      summary: Update service by ID
+      tags:
+        - services
+      parameters:
+        - name: serviceId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                description:
+                  type: string
+                graph_id:
+                  type: integer
+                x:
+                  type: integer
+                y:
+                  type: integer
+      responses:
+        '200':
+          description: Successfull update
+    delete:
+      summary: Delete service по ID
+      tags:
+        - services
+      parameters:
+        - name: serviceId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Successfull delete
+  /relations/{relationId}:
+    get:
+      summary: Get relation by id
+      tags:
+        - relations
+      parameters:
+        - name: relationId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: return relation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  description:
+                    type: string
+                  graph_id:
+                    type: integer
+                  from_service:
+                    type: string
+                  to_service:
+                    type: string
+    put:
+      summary: Обновить отношение по ID
+      tags:
+        - relations
+      parameters:
+        - name: relationId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                description:
+                  type: string
+                graph_id:
+                  type: integer
+                from_service:
+                  type: string
+                to_service:
+                  type: string
+      responses:
+        '200':
+          description: Successful update
+    delete:
+      summary: Delete relation by id
+      tags:
+        - relations
+      parameters:
+        - name: relationId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Successful delete
+  /projects/{projectId}:
+    get:
+      summary: Get project by id
+      tags:
+        - projects
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: return project
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  description:
+                    type: string
+                  diagrams: 
+                    type: array
+                    items:
+                      type: integer
+    delete:
+      summary: delete project by id
+      tags:
+        - projects
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: succesfull delete
+  /projects:
+    get:
+      summary: Get projects
+      tags:
+        - projects
+      responses:
+        '200':
+          description: return projects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    description:
+                      type: string
+    post:
+      summary: Create new project
+      tags:
+        - projects
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                description:
+                  type: string
+      responses:
+        '201':
+          description: Create new 
+  /projects/graph/{projectId}:
+    get:
+      summary: Get all diagrams with projectId
+      tags:
+        - projects
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+       '200':
+        description: return projects
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+
