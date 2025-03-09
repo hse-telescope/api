@@ -13,31 +13,6 @@ tags:
   - name: relations
 paths:
   /graph/{graphId}:
-    get:
-      tags: 
-      - graph
-      summary: Get diagram by id
-      parameters:
-        - name: graphId
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Successful request, return diagram
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                    description: diagram id
-                  name:
-                    type: string
-                    description: diagram 
-                    
     delete:
       tags: 
         - graph
@@ -51,6 +26,30 @@ paths:
       responses:
         '204':
           description: Successful delete
+    put:
+      tags: 
+        - graph
+      summary: Update diagram by id
+      parameters:
+        - name: graphId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+      responses:
+        '200':
+          description: Successful update
   /graph:
     post:
       tags:
@@ -67,14 +66,6 @@ paths:
                   type: integer
                 name:
                   type: string
-                description:
-                  type: string
-                graph_id:
-                  type: integer
-                x:
-                  type: integer
-                y:
-                  type: integer
       responses:
         '201':
           description: Succesful create
@@ -352,34 +343,6 @@ paths:
         '204':
           description: Successful delete
   /projects/{projectId}:
-    get:
-      summary: Get project by id
-      tags:
-        - projects
-      parameters:
-        - name: projectId
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: return project
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  name:
-                    type: string
-                  description:
-                    type: string
-                  diagrams: 
-                    type: array
-                    items:
-                      type: integer
     delete:
       summary: delete project by id
       tags:
@@ -393,6 +356,30 @@ paths:
       responses:
         '200':
           description: succesfull delete
+    put:
+      summary: update project by id
+      tags:
+        - projects
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+      responses:
+        '200':
+          description: succesfull update
   /projects:
     get:
       summary: Get projects
@@ -411,8 +398,6 @@ paths:
                     id:
                       type: integer
                     name:
-                      type: string
-                    description:
                       type: string
     post:
       summary: Create new project
