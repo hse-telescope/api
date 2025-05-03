@@ -1,0 +1,368 @@
+openapi: 3.0.0
+info:
+  title: Auth Service API
+  description: API for user authentication and role management
+  version: 1.0.0
+servers:
+  - url: http://localhost:8081
+    description: Development server
+
+paths:
+  /ping:
+    get:
+      summary: Health check endpoint
+      responses:
+        '200':
+          description: Service is running
+          content:
+            text/plain:
+              example: pong
+
+  /register:
+    post:
+      summary: Register new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '200':
+          description: Successful registration
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  access_token:
+                    type: string
+                  refresh_token:
+                    type: string
+        '400':
+          description: Invalid request
+        '409':
+          description: Username or email already exists
+        '500':
+          description: Internal server error
+
+  /login:
+    post:
+      summary: Authenticate user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  access_token:
+                    type: string
+                  refresh_token:
+                    type: string
+        '400':
+          description: Invalid request
+        '401':
+          description: Invalid credentials
+        '404':
+          description: User not found
+        '500':
+          description: Internal server error
+
+  /logout:
+    post:
+      summary: Logout user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRequest'
+      responses:
+        '200':
+          description: Successful logout
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: Invalid request
+
+  /usersProjects:
+    get:
+      summary: Get user's projects
+      parameters:
+        - name: user_id
+          in: query
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of project IDs
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  project_ids:
+                    type: array
+                    items:
+                      type: integer
+        '400':
+          description: Invalid request
+        '404':
+          description: User not found
+        '500':
+          description: Internal server error
+
+  /createProject:
+    post:
+      summary: Create new project
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProjectRequest'
+      responses:
+        '201':
+          description: Project created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  project_id:
+                    type: integer
+                  status:
+                    type: string
+        '400':
+          description: Invalid request
+        '404':
+          description: User not found
+        '409':
+          description: Project already exists
+        '500':
+          description: Internal server error
+
+  /userProjectRole:
+    get:
+      summary: Check if user's role is sufficient for action
+      parameters:
+        - name: user_id
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: project_id
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: role
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [viewer, editor, owner]
+      responses:
+        '200':
+          description: Role check result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  isRoleEnough:
+                    type: boolean
+        '400':
+          description: Invalid request
+        '404':
+          description: User/project/permission not found
+        '500':
+          description: Internal server error
+
+  /assignRole:
+    post:
+      summary: Assign role to user in project
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssignRoleRequest'
+      responses:
+        '200':
+          description: Role assigned successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+        '400':
+          description: Invalid request or role
+        '403':
+          description: Not authorized to assign roles
+        '404':
+          description: User/project not found
+        '409':
+          description: Role already assigned or conflict
+        '500':
+          description: Internal server error
+
+  /updateRole:
+    put:
+      summary: Update user's role in project
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRoleRequest'
+      responses:
+        '200':
+          description: Role updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+        '400':
+          description: Invalid request or role
+        '403':
+          description: Not authorized to update roles
+        '404':
+          description: User/project/permission not found
+        '500':
+          description: Internal server error
+
+  /deleteRole:
+    delete:
+      summary: Remove user's role in project
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteRoleRequest'
+      responses:
+        '200':
+          description: Role deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+        '400':
+          description: Invalid request
+        '403':
+          description: Not authorized to delete roles
+        '404':
+          description: User/project/permission not found
+        '500':
+          description: Internal server error
+
+components:
+  schemas:
+    RegisterRequest:
+      type: object
+      required: [username, email, password]
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+
+    LoginRequest:
+      type: object
+      required: [loginData, password]
+      properties:
+        loginData:
+          type: string
+        password:
+          type: string
+
+    TokenRequest:
+      type: object
+      required: [token]
+      properties:
+        token:
+          type: string
+
+    CreateProjectRequest:
+      type: object
+      required: [user_id, project_id]
+      properties:
+        user_id:
+          type: integer
+        project_id:
+          type: integer
+
+    AssignRoleRequest:
+      type: object
+      required: [user_id, username, project_id, role]
+      properties:
+        user_id:
+          type: integer
+        username:
+          type: string
+        project_id:
+          type: integer
+        role:
+          type: string
+          enum: [editor, viewer]
+
+    UpdateRoleRequest:
+      type: object
+      required: [user_id, username, project_id, role]
+      properties:
+        user_id:
+          type: integer
+        username:
+          type: string
+        project_id:
+          type: integer
+        role:
+          type: string
+          enum: [editor, viewer]
+
+    DeleteRoleRequest:
+      type: object
+      required: [user_id, username, project_id]
+      properties:
+        user_id:
+          type: integer
+        username:
+          type: string
+        project_id:
+          type: integer
+
+securitySchemes:
+  BearerAuth:
+    type: http
+    scheme: bearer
+    bearerFormat: JWT
