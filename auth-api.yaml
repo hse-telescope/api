@@ -282,6 +282,88 @@ paths:
           description: User/project/permission not found
         '500':
           description: Internal server error
+  
+  /username:
+    put:
+      summary: Change users username
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangeUsernameRequest'
+      responses:
+        '200':
+          description: Email changed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+        '400':
+          description: Invalid request
+        '401':
+          description: Incorrect password
+        '409':
+          description: Username already exists
+        '500':
+          description: Internal server error
+
+  /email:
+    put:
+      summary: Change users email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangeEmailRequest'
+      responses:
+        '200':
+          description: Email changed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+        '400':
+          description: Invalid request
+        '401':
+          description: Incorrect password
+        '409':
+          description: Email already exists
+        '500':
+          description: Internal server error
+
+  /password:
+    put:
+      summary: Change users password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangePasswordRequest'
+      responses:
+        '200':
+          description: Password changed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+        '400':
+          description: Invalid request
+        '401':
+          description: Incorrect password
+        '500':
+          description: Internal server error
 
 components:
   schemas:
@@ -360,6 +442,45 @@ components:
           type: string
         project_id:
           type: integer
+    
+    ChangeUsernameRequest:
+      type: object
+      required: [old_username, new_username, email, password]
+      properties:
+        old_username:
+          type: string
+        new_username:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        
+    ChangeEmailRequest:
+      type: object
+      required: [username, old_email, new_email, password]
+      properties:
+        username:
+          type: string
+        old_email:
+          type: string
+        new_email:
+          type: string
+        password:
+          type: string
+    
+    ChangePasswordRequest:
+      type: object
+      required: [username, email, old_password, new_password]
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        old_password:
+          type: string
+        new_password:
+          type: string
 
 securitySchemes:
   BearerAuth:
